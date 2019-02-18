@@ -44,7 +44,7 @@ const maxRow = 22, maxColumn = 10;
 let landedGrid = createGrid(maxRow, maxColumn);
 
 //FIXME: Remove when done. Inject some landed blocks for testing
-populateBottom();
+// populateBottom();
 
 
 // landedGrid[0][5].isOccupied = 1;
@@ -84,17 +84,17 @@ currentTetromino = tetrominoQueue.pop();
 
 drawFrame();
 
-function populateBottom() {
-    landedGrid[landedGrid.length - 1].forEach(column => {
-        column.isOccupied = 1;
-    })
+// function populateBottom() {
+//     landedGrid[landedGrid.length - 1].forEach(column => {
+//         column.isOccupied = 1;
+//     })
+// }
 
-
-}
-
-
+/**
+ * This functions add a new random tetromino to the tetrominoQueue.
+ */
 function addTetromino() {
-    let random  = Math.round(Math.random() * 5); //FIXME: add bar tetromino and change to 7
+    let random  = Math.round(Math.random() * 6);
 
     let tetromino;
     tetromino = new TetrominoList[random]({row: 0, column: 4});
@@ -122,6 +122,11 @@ function createGrid(row, column) {
     return newArray;
 }
 
+
+/**
+ * This function adds a certain amount of row depends on the passed in argument for count
+ * @param count The amount of rows to add.
+ */
 function addRow(count) {
 
     for(let row = 0; row < count; row++) {
@@ -137,6 +142,12 @@ function addRow(count) {
     drawLandedBlocks(landedGrid);
 }
 
+
+/**
+ * This function remove the row with the specified indices.
+ * @param rowArray The argument should contain an array of indices to remove
+ * @return {number} The amount of rows that have been removed.
+ */
 function clearRow(rowArray) {
     rowArray.forEach(rowIndex => {
         landedGrid.splice(rowIndex,1);
@@ -147,8 +158,8 @@ function clearRow(rowArray) {
 
 
 /**
- * This function returns an array of filled lines's indices
- * @return {Array}
+ * This function returns an array of filled lines' indices
+ * @return {Array} An array which contain indices of filled rows on the "landedGrid"
  */
 function filledRow() {
     let filledRow = [];
@@ -158,7 +169,7 @@ function filledRow() {
         if (!landedGrid[row][0]) continue;// if the first element of the row doesn't exist then skip to next row
 
         for (let column = 0; column < landedGrid[row].length; column++) {
-            if (!landedGrid[row][column].isOccupied) break loop1; // break out of the loop for this current row since it's not all filled
+            if (!landedGrid[row][column].isOccupied) continue loop1; // break out of the loop for this current row since it's not all filled
         }
         // at this point all block in the current row is filled. So add the current filled line in the array.
         filledRow.push(row);
@@ -249,6 +260,7 @@ function drawFrameOnce() {
 
 
 function drawTetromino(tetromino) {
+    //For every row of the tetromino shape
     for (let row = 0; row < tetromino.shape.length; row++) {
         //current row of tetromino on the landed grid
         let tetrominoRowPosition = row + tetromino.topLeft.row;
@@ -256,6 +268,7 @@ function drawTetromino(tetromino) {
         //omit drawing on the 1st invisible(not drawn) row.
         if (tetrominoRowPosition === 1) continue;
 
+        //for each column of the tetromino shape
         for (let column = 0; column < tetromino.shape[row].length; column++) {
             //current column of tetromino on the landed grid
             let tetrominoColumnPosition = column + tetromino.topLeft.column;
@@ -466,6 +479,9 @@ function drawOuterRect(drawingPanel, x, y, width, height, color) {
 }
 
 
+
+
+// ----------- EVENT LISTENERS AND HANDLERS--------------
 window.addEventListener('keydown', keyDownHandler);
 
 window.addEventListener('keyup', keyUpHandler);
@@ -528,7 +544,7 @@ function keyUpHandler(e) {
                 drawFrame();
             }
             break;
-        case ARROW_UP: //TODO: Call rotate on the current tetromino object
+        case ARROW_UP:
             break;
         case ARROW_LEFT:
             break;
