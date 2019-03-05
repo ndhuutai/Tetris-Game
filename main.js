@@ -12,6 +12,7 @@ const ARROW_RIGHT = 'ArrowRight';
 let timerID;
 let frameRate = 1000;
 let collided = false;
+let score = 0;
 let gameOver = false;
 let stopDraw = false;
 let canMoveRight = true, canMoveLeft = true, canRotate = true;
@@ -77,6 +78,7 @@ drawBackground(offsetToCanvasLeft, offsetToCanvasTop, outerBlockWidthWithPadding
 
 drawBackgroundBlocks(offsetToBackgroundLeft, offsetToBackgroundTop);
 // this function should return filled lines in an array for another function to clear
+
 
 // let newTetromino = new OTetromino({ row: 0, column: 2 });
 addTetromino();
@@ -149,10 +151,10 @@ function addRow(count) {
  * @return {number} The amount of rows that have been removed.
  */
 function clearRow(rowArray) {
+    score += rowArray.length * 100;
     rowArray.forEach(rowIndex => {
         landedGrid.splice(rowIndex,1);
     });
-    console.log(rowArray);
     return rowArray.length;
 }
 
@@ -190,6 +192,8 @@ function drawFrame() {
     //refresh the previous framebefore drawing the next tetromino
     drawBackground(offsetToCanvasLeft, offsetToCanvasTop, (outerBlockWidthWithPadding) * maxBackgroundColumn, (outerBlockWidthWithPadding) * maxBackgroundRow);
     drawBackgroundBlocks(offsetToBackgroundLeft, offsetToBackgroundTop);
+    drawText(drawingPanel,'Score',offsetToCanvasLeft + outerBlockWidthWithPadding* 14, offsetToCanvasTop +outerBlockHeightWithPadding); //Fixme: change the hard coded stuff when refactoring the game
+    drawText(drawingPanel,score,offsetToCanvasLeft + outerBlockWidthWithPadding* 14, offsetToCanvasTop +outerBlockHeightWithPadding * 2);
     drawLandedBlocks(landedGrid);
 
     //TODO: Fetch current tetromino to be used in here if there's nothing
@@ -208,6 +212,7 @@ function drawFrame() {
 
         if(filledRow().length) { //if filledRow array has more than 1 element
             addRow(clearRow(filledRow()));
+            console.log(filledRow().length);
         }
         // newTetromino = new JTetromino({ row: 0, column: 2 });
         addTetromino();
@@ -478,7 +483,11 @@ function drawOuterRect(drawingPanel, x, y, width, height, color) {
     drawingPanel.strokeRect(x, y, width, height);
 }
 
-
+function drawText (drawingPanel , message, x, y) {
+    drawingPanel.fillStyle = 'black';
+    drawingPanel.font = '20px sans-serif';
+    drawingPanel.fillText(message,x,y);
+}
 
 
 // ----------- EVENT LISTENERS AND HANDLERS--------------
