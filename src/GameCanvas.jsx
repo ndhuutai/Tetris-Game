@@ -78,7 +78,7 @@ function GameCanvas({ gameState }) {
         drawText(
             drawingPanel,
             'Score',
-            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 13.5,
+            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 12.5,
             offsetToCanvasTop + BLOCK_SIZES.outerBlockHeightWithPadding * 1.5,
             {
                 font: 'bold 16px sans-serif',
@@ -87,7 +87,7 @@ function GameCanvas({ gameState }) {
         drawText(
             drawingPanel,
             String(gameState.score),
-            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 13.5,
+            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 12.5,
             offsetToCanvasTop + BLOCK_SIZES.outerBlockHeightWithPadding * 3,
             {
                 font: 'bold 28px sans-serif',
@@ -96,7 +96,7 @@ function GameCanvas({ gameState }) {
         drawText(
             drawingPanel,
             'Next',
-            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 13.5,
+            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 12.5,
             offsetToCanvasTop + BLOCK_SIZES.outerBlockHeightWithPadding * 6,
             {
                 font: 'bold 16px sans-serif',
@@ -105,7 +105,7 @@ function GameCanvas({ gameState }) {
         drawTetrominoPreview(
             drawingPanel,
             gameState.nextTetromino,
-            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 13.5,
+            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 12.5,
             offsetToCanvasTop + BLOCK_SIZES.outerBlockHeightWithPadding * 7,
         );
 
