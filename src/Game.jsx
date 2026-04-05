@@ -10,6 +10,7 @@ function Game() {
 
     const gameStateRef = useRef(gameState);
     const inputStateRef = useRef(inputState);
+    const hardDropPressedRef = useRef(false);
 
     useEffect(() => {
         gameStateRef.current = gameState;
@@ -18,6 +19,23 @@ function Game() {
     useEffect(() => {
         inputStateRef.current = inputState;
     }, [inputState]);
+
+    useEffect(() => {
+        const occupiedCells = gameState.landedGrid.reduce(
+            (occupiedCount, row) =>
+                occupiedCount + row.reduce((rowCount, cell) => rowCount + (cell.isOccupied ? 1 : 0), 0),
+            0
+        );
+
+        console.debug('[Game] render state', {
+            currentPiece: gameState.currentTetromino.constructor.name,
+            topLeftRow: gameState.currentTetromino.topLeft.row,
+            topLeftColumn: gameState.currentTetromino.topLeft.column,
+            occupiedCells,
+            score: gameState.score,
+            isStopped: gameState.isStopped,
+        });
+    }, [gameState]);
 
     // Run the falling-piece loop using the current frame rate.
     useEffect(() => {
@@ -51,7 +69,15 @@ function Game() {
     // Register global keyboard listeners once the component is mounted.
     useEffect(() => {
         const onKeyDown = (event) => {
-            if (event.repeat && event.key === ' ') {
+            if (event.key === ' ') {
+                if (hardDropPressedRef.current || event.repeat) {
+                    return;
+                }
+
+                hardDropPressedRef.current = true;
+            }
+
+            if (gameStateRef.current.isStopped) {
                 return;
             }
 
@@ -84,6 +110,10 @@ function Game() {
         };
 
         const onKeyUp = (event) => {
+            if (event.key === ' ') {
+                hardDropPressedRef.current = false;
+            }
+
             try {
                 const {
                     gameState: newGameState,
@@ -126,6 +156,7 @@ function Game() {
         const nextGameState = createInitialGameState();
         const nextInputState = createInitialInputState();
 
+        hardDropPressedRef.current = false;
         gameStateRef.current = nextGameState;
         inputStateRef.current = nextInputState;
         setGameState(nextGameState);

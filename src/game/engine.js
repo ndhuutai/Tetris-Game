@@ -9,6 +9,13 @@ const logEngineEvent = (eventName, details) => {
     console.debug(`[engine] ${eventName}`, details);
 };
 
+const countOccupiedCells = (landedGrid) =>
+    landedGrid.reduce(
+        (occupiedCount, row) =>
+            occupiedCount + row.reduce((rowCount, cell) => rowCount + (cell.isOccupied ? 1 : 0), 0),
+        0
+    );
+
 /**
  * Create the initial game state for a new session.
  */
@@ -50,6 +57,9 @@ export const settleCurrentTetromino = (gameState) => {
         clearedRows: filledRows,
         score: nextGameState.score,
         nextPiece: nextGameState.currentTetromino.constructor.name,
+        nextPieceRow: nextGameState.currentTetromino.topLeft.row,
+        nextPieceColumn: nextGameState.currentTetromino.topLeft.column,
+        occupiedCells: countOccupiedCells(landedGrid),
         isStopped: nextGameState.isStopped,
     });
 
@@ -110,6 +120,7 @@ export const hardDropGame = (gameState) => {
         piece: gameState.currentTetromino.constructor.name,
         steps,
         landingRow: nextGameState.currentTetromino.topLeft.row,
+        landingColumn: nextGameState.currentTetromino.topLeft.column,
     });
 
     return settleCurrentTetromino(nextGameState);

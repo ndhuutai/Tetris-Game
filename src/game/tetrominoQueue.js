@@ -5,5 +5,8 @@ export const TETROMINO_TYPES = [OTetromino, STetromino, ZTetromino, TTetromino, 
 export const createRandomTetromino = () => {
     const random = Math.floor(Math.random() * TETROMINO_TYPES.length);
 
-    return new TETROMINO_TYPES[random](SPAWN_POSITION);
+    return new TETROMINO_TYPES[random]({
+        row: SPAWN_POSITION.row,
+        column: SPAWN_POSITION.column,
+    });
 }

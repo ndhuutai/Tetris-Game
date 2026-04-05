@@ -15,7 +15,13 @@ function GameHud({ score, isStopped, onRestart }) {
                     <strong className="score-value">{score}</strong>
                 </div>
 
-                <button className="restart-button" type="button" onClick={onRestart}>
+                <button
+                    className="restart-button"
+                    type="button"
+                    onClick={onRestart}
+                    disabled={!isStopped}
+                    tabIndex={isStopped ? 0 : -1}
+                >
                     Restart
                 </button>
             </div>
