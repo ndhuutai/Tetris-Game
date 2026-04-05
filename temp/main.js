@@ -17,7 +17,7 @@ let gameOver = false;
 let stopDraw = false;
 let canMoveRight = true, canMoveLeft = true, canRotate = true;
 let tetrominoQueue = [];
-const TetrominoList = [OTetromino,STetromino,ZTetromino,TTetromino,LTetromino,JTetromino,BarTetromino]; // contains all Tetrominos types' constructor functions
+const TetrominoList = [OTetromino, STetromino, ZTetromino, TTetromino, LTetromino, JTetromino, BarTetromino]; // contains all Tetrominos types' constructor functions
 //TODO: add drawing console to a new function that does all background drawing
 
 let currentTetromino;
@@ -96,10 +96,10 @@ drawFrame();
  * This functions add a new random tetromino to the tetrominoQueue.
  */
 function addTetromino() {
-    let random  = Math.round(Math.random() * 6);
+    let random = Math.round(Math.random() * 6);
 
     let tetromino;
-    tetromino = new TetrominoList[random]({row: 0, column: 4});
+    tetromino = new TetrominoList[random]({ row: 0, column: 4 });
     tetrominoQueue.push(tetromino);
 }
 
@@ -131,16 +131,16 @@ function createGrid(row, column) {
  */
 function addRow(count) {
 
-    for(let row = 0; row < count; row++) {
-     landedGrid.unshift(new Array(maxColumn));
+    for (let row = 0; row < count; row++) {
+        landedGrid.unshift(new Array(maxColumn));
     }
 
-    for(let row = 0; row < count; row++) {
-        for(let column = 0; column < landedGrid[row].length; column++) {
-            landedGrid[row][column] = {x:0, y:0, isOccupied:0};
+    for (let row = 0; row < count; row++) {
+        for (let column = 0; column < landedGrid[row].length; column++) {
+            landedGrid[row][column] = { x: 0, y: 0, isOccupied: 0 };
         }
     }
-    drawBackgroundBlocks(offsetToBackgroundLeft,offsetToBackgroundTop);
+    drawBackgroundBlocks(offsetToBackgroundLeft, offsetToBackgroundTop);
     drawLandedBlocks(landedGrid);
 }
 
@@ -153,7 +153,7 @@ function addRow(count) {
 function clearRow(rowArray) {
     score += rowArray.length * 100;
     rowArray.forEach(rowIndex => {
-        landedGrid.splice(rowIndex,1);
+        landedGrid.splice(rowIndex, 1);
     });
     return rowArray.length;
 }
@@ -192,8 +192,8 @@ function drawFrame() {
     //refresh the previous framebefore drawing the next tetromino
     drawBackground(offsetToCanvasLeft, offsetToCanvasTop, (outerBlockWidthWithPadding) * maxBackgroundColumn, (outerBlockWidthWithPadding) * maxBackgroundRow);
     drawBackgroundBlocks(offsetToBackgroundLeft, offsetToBackgroundTop);
-    drawText(drawingPanel,'Score',offsetToCanvasLeft + outerBlockWidthWithPadding* 14, offsetToCanvasTop +outerBlockHeightWithPadding); //Fixme: change the hard coded stuff when refactoring the game
-    drawText(drawingPanel,score,offsetToCanvasLeft + outerBlockWidthWithPadding* 14, offsetToCanvasTop +outerBlockHeightWithPadding * 2);
+    drawText(drawingPanel, 'Score', offsetToCanvasLeft + outerBlockWidthWithPadding * 14, offsetToCanvasTop + outerBlockHeightWithPadding); //Fixme: change the hard coded stuff when refactoring the game
+    drawText(drawingPanel, score, offsetToCanvasLeft + outerBlockWidthWithPadding * 14, offsetToCanvasTop + outerBlockHeightWithPadding * 2);
     drawLandedBlocks(landedGrid);
 
     //TODO: Fetch current tetromino to be used in here if there's nothing
@@ -205,12 +205,12 @@ function drawFrame() {
         currentTetromino.dropSlow();
         drawTetromino(currentTetromino);
     } else {
-        if(!stopDraw) {
+        if (!stopDraw) {
             drawTetromino(currentTetromino); // draw the tetromino for the last time before moving on.
             saveShape(currentTetromino);
         }
 
-        if(filledRow().length) { //if filledRow array has more than 1 element
+        if (filledRow().length) { //if filledRow array has more than 1 element
             addRow(clearRow(filledRow()));
             console.log(filledRow().length);
         }
@@ -231,7 +231,7 @@ function drawFrame() {
     //saving down the timerID to clear it out when needed to change drawing speed
     //FIXME: Maybe this is still useful for game pausing or just clear current timeout and set new one.
 
-    if(!stopDraw) {
+    if (!stopDraw) {
         timerID = setTimeout(drawFrame, frameRate);
     }
 
@@ -282,7 +282,7 @@ function drawTetromino(tetromino) {
             if (tetromino.shape[row][column]) {
                 // //TODO: if potential shape is not occupied then draw else skip
                 try {
-                    if(landedGrid[tetrominoRowPosition][tetrominoColumnPosition].x) { // accounts for the invisible rows on top, so don't draw if the tetromino is at the top edge
+                    if (landedGrid[tetrominoRowPosition][tetrominoColumnPosition].x) { // accounts for the invisible rows on top, so don't draw if the tetromino is at the top edge
                         drawSingleBlock(drawingPanel, landedGrid[tetrominoRowPosition][tetrominoColumnPosition].x, landedGrid[tetrominoRowPosition][tetrominoColumnPosition].y, '#000');
                     }
                 } catch (e) {
@@ -327,14 +327,14 @@ function checkRight(tetromino, landedGrid) {
         for (let column = 0; column < tetromino.shape[row].length; column++) {
             // debugger;
             if (tetromino.shape[row][column]) {
-                    if (landedGrid[row + tetromino.potentialTopLeft.right.row][column + tetromino.potentialTopLeft.right.column].isOccupied) {
-                        canMoveRight = false; //  false if can't move
-                        return;//immdediately return since this means the whole tetromino can't move
-                        //not doing this will result in drawing overlaps since the other blocks
-                        //of the current tetromino will reset the canMove... to be true
-                    } else {
-                        canMoveRight = true;
-                    }
+                if (landedGrid[row + tetromino.potentialTopLeft.right.row][column + tetromino.potentialTopLeft.right.column].isOccupied) {
+                    canMoveRight = false; //  false if can't move
+                    return;//immdediately return since this means the whole tetromino can't move
+                    //not doing this will result in drawing overlaps since the other blocks
+                    //of the current tetromino will reset the canMove... to be true
+                } else {
+                    canMoveRight = true;
+                }
             }
         }
     }
@@ -483,10 +483,10 @@ function drawOuterRect(drawingPanel, x, y, width, height, color) {
     drawingPanel.strokeRect(x, y, width, height);
 }
 
-function drawText (drawingPanel , message, x, y) {
+function drawText(drawingPanel, message, x, y) {
     drawingPanel.fillStyle = 'black';
     drawingPanel.font = '20px sans-serif';
-    drawingPanel.fillText(message,x,y);
+    drawingPanel.fillText(message, x, y);
 }
 
 
@@ -507,7 +507,7 @@ function keyDownHandler(e) {
         case ARROW_DOWN: //TODO: maybe add a variable to keep check of when space bar is hit
             clearTimeout(timerID);
             frameRate = 50;
-            if(!stopDraw) {
+            if (!stopDraw) {
                 drawFrame();
             }
             break;
@@ -523,7 +523,7 @@ function keyDownHandler(e) {
             if (canMoveLeft) {
                 if (!collided) {
                     currentTetromino.moveLeft();
-                        drawFrameOnce();
+                    drawFrameOnce();
                 }
             }
             break;
