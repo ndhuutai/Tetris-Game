@@ -10,7 +10,7 @@ export const TIMINGS = {
     defaultFrameRate: 1000,
     releaseDownFrameRate: 500,
     softDropFrameRate: 50,
-    hardDropFrameRate: 0,
+    hardDropFrameRate: 5,
 };
 
 
@@ -52,7 +52,7 @@ export const COLORS = {
 
 
 export const SPAWN_POSITION = {
-    row: 0,
+    row: 2,
     column: 4,
 };
 

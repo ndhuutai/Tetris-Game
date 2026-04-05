@@ -476,8 +476,8 @@ const cloneTetromino = (tetromino) => {
     clonedTetromino._potentialTopLeft = clonePotentialTopLeft(tetromino.potentialTopLeft);
     clonedTetromino._currentShapeIndex = tetromino._currentShapeIndex;
     clonedTetromino._potentialShapeIndex = tetromino._potentialShapeIndex;
-    clonedTetromino._shape = clonedTetromino._rotatedShape[clonedTetromino._currentShapeIndex];
-    clonedTetromino._potentialShape = clonedTetromino._rotatedShape[clonedTetromino._potentialShapeIndex];
+    clonedTetromino._shape = tetromino.shape;
+    clonedTetromino._potentialShape = tetromino.potentialShape;
 
     return clonedTetromino;
 };

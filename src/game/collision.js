@@ -59,10 +59,17 @@ export const canRotate = (tetromino, landedGrid) => {
     return true;
 };
 
-export const isGameOver = (landedGrid) => {
-    for (let column = 0; column < landedGrid[1].length; column++) {
-        if (landedGrid[1][column].isOccupied) {
-            return true;
+export const isGameOver = (tetromino, landedGrid) => {
+    for (let row = 0; row < tetromino.shape.length; row++) {
+        for (let column = 0; column < tetromino.shape[row].length; column++) {
+            if (!tetromino.shape[row][column]) continue;
+
+            const targetRow = row + tetromino.topLeft.row;
+            const targetColumn = column + tetromino.topLeft.column;
+
+            if (landedGrid[targetRow][targetColumn].isOccupied) {
+                return true;
+            }
         }
     }
 

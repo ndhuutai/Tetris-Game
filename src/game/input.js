@@ -1,6 +1,7 @@
 import { INPUT_KEYS, TIMINGS } from './constants';
 import { canMoveLeft, canMoveRight, canRotate, hasLanded } from './collision';
 import { cloneTetromino } from './tetrominoes';
+import { hardDropGame } from './engine';
 
 /**
  * Track input-driven timing without owning the actual timer.
@@ -73,11 +74,7 @@ export const handleKeyDown = (key, gameState, inputState) => {
 
     switch (key) {
         case INPUT_KEYS.spacebar:
-            nextInputState = {
-                ...inputState,
-                frameRate: TIMINGS.hardDropFrameRate,
-            };
-            shouldTick = !gameState.isStopped;
+            nextGameState = hardDropGame(gameState);
             break;
         case INPUT_KEYS.arrowDown:
             nextInputState = {
@@ -108,19 +105,11 @@ export const handleKeyUp = (key, gameState, inputState) => {
     let nextInputState = inputState;
 
     switch (key) {
-        case INPUT_KEYS.spacebar:
-            nextInputState = {
-                ...inputState,
-                frameRate: TIMINGS.defaultFrameRate,
-            };
-            shouldTick = !gameState.isStopped;
-            break;
         case INPUT_KEYS.arrowDown:
             nextInputState = {
                 ...inputState,
                 frameRate: TIMINGS.releaseDownFrameRate,
             };
-            shouldTick = !gameState.isStopped;
             break;
     }
 

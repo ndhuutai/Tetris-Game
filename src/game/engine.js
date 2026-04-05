@@ -5,6 +5,10 @@ import { addRows, clearRows, getFilledRows, saveTetrominoToGrid } from './board'
 import { hasLanded, isGameOver } from './collision';
 import { cloneTetromino } from './tetrominoes';
 
+const logEngineEvent = (eventName, details) => {
+    console.debug(`[engine] ${eventName}`, details);
+};
+
 /**
  * Create the initial game state for a new session.
  */
@@ -19,6 +23,7 @@ export const createInitialGameState = () => ({
  * Save the active tetromino, clear any completed rows, and spawn the next piece.
  */
 export const settleCurrentTetromino = (gameState) => {
+    const settledPiece = gameState.currentTetromino.constructor.name;
     let landedGrid = saveTetrominoToGrid(gameState.landedGrid, gameState.currentTetromino);
 
     const filledRows = getFilledRows(landedGrid);
@@ -30,13 +35,25 @@ export const settleCurrentTetromino = (gameState) => {
         score += filledRows.length * SCORING.pointsPerRow;
     }
 
-    return {
+    const currentTetromino = createRandomTetromino();
+
+    const nextGameState = {
         ...gameState,
         landedGrid,
-        currentTetromino: createRandomTetromino(),
+        currentTetromino,
         score,
-        isStopped: isGameOver(landedGrid),
+        isStopped: isGameOver(currentTetromino, landedGrid),
     };
+
+    logEngineEvent('settleCurrentTetromino', {
+        settledPiece,
+        clearedRows: filledRows,
+        score: nextGameState.score,
+        nextPiece: nextGameState.currentTetromino.constructor.name,
+        isStopped: nextGameState.isStopped,
+    });
+
+    return nextGameState;
 };
 
 /**
@@ -58,4 +75,42 @@ export const tickGame = (gameState) => {
         ...gameState,
         currentTetromino,
     };
+};
+
+/**
+ * Drop the current tetromino until it lands, then settle it immediately.
+ */
+export const hardDropGame = (gameState) => {
+    if (gameState.isStopped) {
+        return gameState;
+    }
+
+    let nextGameState = gameState;
+    let steps = 0;
+    const maxSteps = BOARD_DIMENSIONS.maxRow + 2;
+
+    while (!hasLanded(nextGameState.currentTetromino, nextGameState.landedGrid)) {
+        if (steps >= maxSteps) {
+            const error = new Error('Hard drop exceeded expected step count');
+            console.error('[engine] hardDropGame aborted', {
+                steps,
+                maxSteps,
+                currentPiece: nextGameState.currentTetromino.constructor.name,
+                topLeft: nextGameState.currentTetromino.topLeft,
+                error,
+            });
+            throw error;
+        }
+
+        nextGameState = tickGame(nextGameState);
+        steps++;
+    }
+
+    logEngineEvent('hardDropGame', {
+        piece: gameState.currentTetromino.constructor.name,
+        steps,
+        landingRow: nextGameState.currentTetromino.topLeft.row,
+    });
+
+    return settleCurrentTetromino(nextGameState);
 };

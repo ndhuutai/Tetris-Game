@@ -31,7 +31,15 @@ function Game() {
         // 1. compute the next game state with tickGame
         // 2. return that next state from a functional setGameState update
         const timerId = setInterval(() => {
-            setGameState(currentGameState => tickGame(currentGameState));
+            try {
+                setGameState(currentGameState => tickGame(currentGameState));
+            } catch (error) {
+                console.error('[Game] tick loop failed', {
+                    error,
+                    gameState: gameStateRef.current,
+                    inputState: inputStateRef.current,
+                });
+            }
         }, inputState.frameRate)
         // Clear the interval on cleanup.
 
@@ -43,42 +51,64 @@ function Game() {
     // Register global keyboard listeners once the component is mounted.
     useEffect(() => {
         const onKeyDown = (event) => {
-            const {
-                gameState: newGameState,
-                inputState: newInputState,
-                shouldTick,
-            } = handleKeyDown(event.key, gameStateRef.current, inputStateRef.current);
+            if (event.repeat && event.key === ' ') {
+                return;
+            }
 
-            gameStateRef.current = newGameState;
-            inputStateRef.current = newInputState;
+            try {
+                const {
+                    gameState: newGameState,
+                    inputState: newInputState,
+                    shouldTick,
+                } = handleKeyDown(event.key, gameStateRef.current, inputStateRef.current);
 
-            setGameState(newGameState);
-            setInputState(newInputState);
+                gameStateRef.current = newGameState;
+                inputStateRef.current = newInputState;
 
-            if (shouldTick) {
-                const tickedGameState = tickGame(newGameState);
-                gameStateRef.current = tickedGameState;
-                setGameState(tickedGameState);
+                setGameState(newGameState);
+                setInputState(newInputState);
+
+                if (shouldTick) {
+                    const tickedGameState = tickGame(newGameState);
+                    gameStateRef.current = tickedGameState;
+                    setGameState(tickedGameState);
+                }
+            } catch (error) {
+                console.error('[Game] keydown handler failed', {
+                    error,
+                    key: event.key,
+                    gameState: gameStateRef.current,
+                    inputState: inputStateRef.current,
+                });
             }
         };
 
         const onKeyUp = (event) => {
-            const {
-                gameState: newGameState,
-                inputState: newInputState,
-                shouldTick,
-            } = handleKeyUp(event.key, gameStateRef.current, inputStateRef.current);
+            try {
+                const {
+                    gameState: newGameState,
+                    inputState: newInputState,
+                    shouldTick,
+                } = handleKeyUp(event.key, gameStateRef.current, inputStateRef.current);
 
-            gameStateRef.current = newGameState;
-            inputStateRef.current = newInputState;
+                gameStateRef.current = newGameState;
+                inputStateRef.current = newInputState;
 
-            setGameState(newGameState);
-            setInputState(newInputState);
+                setGameState(newGameState);
+                setInputState(newInputState);
 
-            if (shouldTick) {
-                const tickedGameState = tickGame(newGameState);
-                gameStateRef.current = tickedGameState;
-                setGameState(tickedGameState);
+                if (shouldTick) {
+                    const tickedGameState = tickGame(newGameState);
+                    gameStateRef.current = tickedGameState;
+                    setGameState(tickedGameState);
+                }
+            } catch (error) {
+                console.error('[Game] keyup handler failed', {
+                    error,
+                    key: event.key,
+                    gameState: gameStateRef.current,
+                    inputState: inputStateRef.current,
+                });
             }
         };
 
