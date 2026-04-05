@@ -1,5 +1,13 @@
 import { createGrid } from './createGrid';
 
+const cloneCell = (cell) => ({
+    x: cell.x,
+    y: cell.y,
+    isOccupied: cell.isOccupied,
+});
+
+export const cloneGrid = (landedGrid) => landedGrid.map((row) => row.map(cloneCell));
+
 /**
  * Return all fully occupied row indexes.
  */
@@ -31,11 +39,10 @@ export const getFilledRows = (landedGrid) => {
  * Returns how many rows were removed.
  */
 export const clearRows = (landedGrid, rowIndexes) => {
-    rowIndexes.forEach((rowIndex) => {
-        landedGrid.splice(rowIndex, 1);
-    });
-
-    return rowIndexes.length;
+    const rowIndexSet = new Set(rowIndexes);
+    return landedGrid
+        .filter((_, rowIndex) => !rowIndexSet.has(rowIndex))
+        .map((row) => row.map(cloneCell));
 };
 
 /**
@@ -43,22 +50,23 @@ export const clearRows = (landedGrid, rowIndexes) => {
  */
 export const addRows = (landedGrid, count, columnCount) => {
     const newRows = createGrid(count, columnCount);
-
-    for (let row = 0; row < newRows.length; row++) {
-        landedGrid.unshift(newRows[row]);
-    }
+    return [...newRows, ...landedGrid.map((row) => row.map(cloneCell))];
 };
 
 /**
  * Save the current tetromino shape into the landed grid.
  */
 export const saveTetrominoToGrid = (landedGrid, tetromino) => {
+    const nextGrid = cloneGrid(landedGrid);
+
     for (let row = 0; row < tetromino.shape.length; row++) {
         for (let column = 0; column < tetromino.shape[row].length; column++) {
             if (tetromino.shape[row][column]) {
-                landedGrid[row + tetromino.topLeft.row][column + tetromino.topLeft.column].isOccupied =
+                nextGrid[row + tetromino.topLeft.row][column + tetromino.topLeft.column].isOccupied =
                     tetromino.shape[row][column];
             }
         }
     }
+
+    return nextGrid;
 };

@@ -3,6 +3,7 @@ import { createGrid } from './createGrid';
 import { createRandomTetromino } from './tetrominoQueue';
 import { addRows, clearRows, getFilledRows, saveTetrominoToGrid } from './board';
 import { hasLanded, isGameOver } from './collision';
+import { cloneTetromino } from './tetrominoes';
 
 /**
  * Create the initial game state for a new session.
@@ -18,20 +19,24 @@ export const createInitialGameState = () => ({
  * Save the active tetromino, clear any completed rows, and spawn the next piece.
  */
 export const settleCurrentTetromino = (gameState) => {
-    saveTetrominoToGrid(gameState.landedGrid, gameState.currentTetromino);
+    let landedGrid = saveTetrominoToGrid(gameState.landedGrid, gameState.currentTetromino);
 
-    const filledRows = getFilledRows(gameState.landedGrid);
+    const filledRows = getFilledRows(landedGrid);
+    let score = gameState.score;
 
     if (filledRows.length) {
-        const clearedRowCount = clearRows(gameState.landedGrid, filledRows);
-        addRows(gameState.landedGrid, clearedRowCount, BOARD_DIMENSIONS.maxColumn);
-        gameState.score += clearedRowCount * SCORING.pointsPerRow;
+        landedGrid = clearRows(landedGrid, filledRows);
+        landedGrid = addRows(landedGrid, filledRows.length, BOARD_DIMENSIONS.maxColumn);
+        score += filledRows.length * SCORING.pointsPerRow;
     }
 
-    gameState.currentTetromino = createRandomTetromino();
-    gameState.isStopped = isGameOver(gameState.landedGrid);
-
-    return gameState;
+    return {
+        ...gameState,
+        landedGrid,
+        currentTetromino: createRandomTetromino(),
+        score,
+        isStopped: isGameOver(landedGrid),
+    };
 };
 
 /**
@@ -46,6 +51,11 @@ export const tickGame = (gameState) => {
         return settleCurrentTetromino(gameState);
     }
 
-    gameState.currentTetromino.dropSlow();
-    return gameState;
+    const currentTetromino = cloneTetromino(gameState.currentTetromino);
+    currentTetromino.dropSlow();
+
+    return {
+        ...gameState,
+        currentTetromino,
+    };
 };

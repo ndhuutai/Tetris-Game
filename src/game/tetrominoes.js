@@ -451,6 +451,45 @@ class BlockInfo {
         this.isOccupied = isOccupied;
     }
 }
+
+const clonePosition = (position) => ({
+    row: position.row,
+    column: position.column,
+});
+
+const clonePotentialTopLeft = (potentialTopLeft) => ({
+    down: clonePosition(potentialTopLeft.down),
+    left: clonePosition(potentialTopLeft.left),
+    right: clonePosition(potentialTopLeft.right),
+});
+
+const registerTetrominoType = (TetrominoType) => {
+    return TetrominoType;
+};
+
+const getTetrominoType = (tetromino) => tetromino.constructor;
+
+const cloneTetromino = (tetromino) => {
+    const TetrominoType = getTetrominoType(tetromino);
+    const clonedTetromino = new TetrominoType(clonePosition(tetromino.topLeft));
+
+    clonedTetromino._potentialTopLeft = clonePotentialTopLeft(tetromino.potentialTopLeft);
+    clonedTetromino._currentShapeIndex = tetromino._currentShapeIndex;
+    clonedTetromino._potentialShapeIndex = tetromino._potentialShapeIndex;
+    clonedTetromino._shape = clonedTetromino._rotatedShape[clonedTetromino._currentShapeIndex];
+    clonedTetromino._potentialShape = clonedTetromino._rotatedShape[clonedTetromino._potentialShapeIndex];
+
+    return clonedTetromino;
+};
+
+registerTetrominoType(OTetromino);
+registerTetrominoType(STetromino);
+registerTetrominoType(ZTetromino);
+registerTetrominoType(TTetromino);
+registerTetrominoType(LTetromino);
+registerTetrominoType(JTetromino);
+registerTetrominoType(BarTetromino);
+
 export {
     OTetromino,
     STetromino,
@@ -458,5 +497,7 @@ export {
     TTetromino,
     LTetromino,
     JTetromino,
-    BarTetromino
+    BarTetromino,
+    cloneTetromino,
+    getTetrominoType
 }

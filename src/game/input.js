@@ -1,5 +1,6 @@
 import { INPUT_KEYS, TIMINGS } from './constants';
 import { canMoveLeft, canMoveRight, canRotate, hasLanded } from './collision';
+import { cloneTetromino } from './tetrominoes';
 
 /**
  * Track input-driven timing without owning the actual timer.
@@ -10,41 +11,56 @@ export const createInitialInputState = () => ({
 
 export const moveTetrominoLeft = (gameState) => {
     if (gameState.isStopped || hasLanded(gameState.currentTetromino, gameState.landedGrid)) {
-        return false;
+        return gameState;
     }
 
     if (!canMoveLeft(gameState.currentTetromino, gameState.landedGrid)) {
-        return false;
+        return gameState;
     }
 
-    gameState.currentTetromino.moveLeft();
-    return true;
+    const currentTetromino = cloneTetromino(gameState.currentTetromino);
+    currentTetromino.moveLeft();
+
+    return {
+        ...gameState,
+        currentTetromino,
+    };
 };
 
 export const moveTetrominoRight = (gameState) => {
     if (gameState.isStopped || hasLanded(gameState.currentTetromino, gameState.landedGrid)) {
-        return false;
+        return gameState;
     }
 
     if (!canMoveRight(gameState.currentTetromino, gameState.landedGrid)) {
-        return false;
+        return gameState;
     }
 
-    gameState.currentTetromino.moveRight();
-    return true;
+    const currentTetromino = cloneTetromino(gameState.currentTetromino);
+    currentTetromino.moveRight();
+
+    return {
+        ...gameState,
+        currentTetromino,
+    };
 };
 
 export const rotateTetromino = (gameState) => {
     if (gameState.isStopped || hasLanded(gameState.currentTetromino, gameState.landedGrid)) {
-        return false;
+        return gameState;
     }
 
     if (!canRotate(gameState.currentTetromino, gameState.landedGrid)) {
-        return false;
+        return gameState;
     }
 
-    gameState.currentTetromino.rotate();
-    return true;
+    const currentTetromino = cloneTetromino(gameState.currentTetromino);
+    currentTetromino.rotate();
+
+    return {
+        ...gameState,
+        currentTetromino,
+    };
 };
 
 /**
@@ -52,28 +68,36 @@ export const rotateTetromino = (gameState) => {
  */
 export const handleKeyDown = (key, gameState, inputState) => {
     let shouldTick = false;
+    let nextGameState = gameState;
+    let nextInputState = inputState;
 
     switch (key) {
         case INPUT_KEYS.spacebar:
-            inputState.frameRate = TIMINGS.hardDropFrameRate;
+            nextInputState = {
+                ...inputState,
+                frameRate: TIMINGS.hardDropFrameRate,
+            };
             shouldTick = !gameState.isStopped;
             break;
         case INPUT_KEYS.arrowDown:
-            inputState.frameRate = TIMINGS.softDropFrameRate;
+            nextInputState = {
+                ...inputState,
+                frameRate: TIMINGS.softDropFrameRate,
+            };
             shouldTick = !gameState.isStopped;
             break;
         case INPUT_KEYS.arrowUp:
-            rotateTetromino(gameState);
+            nextGameState = rotateTetromino(gameState);
             break;
         case INPUT_KEYS.arrowLeft:
-            moveTetrominoLeft(gameState);
+            nextGameState = moveTetrominoLeft(gameState);
             break;
         case INPUT_KEYS.arrowRight:
-            moveTetrominoRight(gameState);
+            nextGameState = moveTetrominoRight(gameState);
             break;
     }
 
-    return { gameState, inputState, shouldTick };
+    return { gameState: nextGameState, inputState: nextInputState, shouldTick };
 };
 
 /**
@@ -81,17 +105,24 @@ export const handleKeyDown = (key, gameState, inputState) => {
  */
 export const handleKeyUp = (key, gameState, inputState) => {
     let shouldTick = false;
+    let nextInputState = inputState;
 
     switch (key) {
         case INPUT_KEYS.spacebar:
-            inputState.frameRate = TIMINGS.defaultFrameRate;
+            nextInputState = {
+                ...inputState,
+                frameRate: TIMINGS.defaultFrameRate,
+            };
             shouldTick = !gameState.isStopped;
             break;
         case INPUT_KEYS.arrowDown:
-            inputState.frameRate = TIMINGS.releaseDownFrameRate;
+            nextInputState = {
+                ...inputState,
+                frameRate: TIMINGS.releaseDownFrameRate,
+            };
             shouldTick = !gameState.isStopped;
             break;
     }
 
-    return { gameState, inputState, shouldTick };
+    return { gameState, inputState: nextInputState, shouldTick };
 };
