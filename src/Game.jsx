@@ -168,7 +168,6 @@ function Game() {
         <section>
             {/* Render score, game-over state, and restart controls. */}
             <GameHud
-                score={gameState.score}
                 isStopped={gameState.isStopped}
                 onRestart={handleRestart}
             />

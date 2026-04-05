@@ -22,6 +22,7 @@ const countOccupiedCells = (landedGrid) =>
 export const createInitialGameState = () => ({
     landedGrid: createGrid(BOARD_DIMENSIONS.maxRow, BOARD_DIMENSIONS.maxColumn),
     currentTetromino: createRandomTetromino(),
+    nextTetromino: createRandomTetromino(),
     score: 0,
     isStopped: false,
 });
@@ -42,12 +43,14 @@ export const settleCurrentTetromino = (gameState) => {
         score += filledRows.length * SCORING.pointsPerRow;
     }
 
-    const currentTetromino = createRandomTetromino();
+    const currentTetromino = gameState.nextTetromino;
+    const nextTetromino = createRandomTetromino();
 
     const nextGameState = {
         ...gameState,
         landedGrid,
         currentTetromino,
+        nextTetromino,
         score,
         isStopped: isGameOver(currentTetromino, landedGrid),
     };
@@ -59,6 +62,7 @@ export const settleCurrentTetromino = (gameState) => {
         nextPiece: nextGameState.currentTetromino.constructor.name,
         nextPieceRow: nextGameState.currentTetromino.topLeft.row,
         nextPieceColumn: nextGameState.currentTetromino.topLeft.column,
+        previewPiece: nextGameState.nextTetromino.constructor.name,
         occupiedCells: countOccupiedCells(landedGrid),
         isStopped: nextGameState.isStopped,
     });

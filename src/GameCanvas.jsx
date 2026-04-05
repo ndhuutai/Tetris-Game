@@ -3,8 +3,12 @@ import { BOARD_DIMENSIONS, BLOCK_SIZES, COLORS } from './game/constants';
 import {
     drawBackground,
     drawBackgroundBlocks,
+    drawControlPanel,
+    drawRoundedRect,
     drawLandedBlocks,
     drawTetromino,
+    drawTetrominoPreview,
+    drawText,
 } from './game/render';
 
 function GameCanvas({ gameState }) {
@@ -36,8 +40,17 @@ function GameCanvas({ gameState }) {
         if (!drawingPanel) return;
 
         // Clear and repaint the full canvas background.
-        drawingPanel.fillStyle = COLORS.canvasBackground;
-        drawingPanel.fillRect(0, 0, canvasWidth, canvasHeight);
+        drawingPanel.clearRect(0, 0, canvasWidth, canvasHeight);
+        drawRoundedRect(
+            drawingPanel,
+            0,
+            0,
+            canvasWidth,
+            canvasHeight,
+            28,
+            COLORS.canvasBackground,
+            COLORS.boardBackgroundStroke
+        );
 
         // Draw the board shell.
         drawBackground(
@@ -61,6 +74,43 @@ function GameCanvas({ gameState }) {
 
         // Draw the active falling piece.
         drawTetromino(drawingPanel, gameState.currentTetromino, gameState.landedGrid);
+
+        drawText(
+            drawingPanel,
+            'Score',
+            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 13.5,
+            offsetToCanvasTop + BLOCK_SIZES.outerBlockHeightWithPadding * 1.5,
+            {
+                font: 'bold 16px sans-serif',
+            }
+        );
+        drawText(
+            drawingPanel,
+            String(gameState.score),
+            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 13.5,
+            offsetToCanvasTop + BLOCK_SIZES.outerBlockHeightWithPadding * 3,
+            {
+                font: 'bold 28px sans-serif',
+            }
+        );
+        drawText(
+            drawingPanel,
+            'Next',
+            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 13.5,
+            offsetToCanvasTop + BLOCK_SIZES.outerBlockHeightWithPadding * 6,
+            {
+                font: 'bold 16px sans-serif',
+            }
+        );
+        drawTetrominoPreview(
+            drawingPanel,
+            gameState.nextTetromino,
+            offsetToCanvasLeft + BLOCK_SIZES.outerBlockWidthWithPadding * 13.5,
+            offsetToCanvasTop + BLOCK_SIZES.outerBlockHeightWithPadding * 7,
+        );
+
+        // Draw the decorative handheld control layout below the board.
+        drawControlPanel(drawingPanel, canvasWidth, canvasHeight);
 
         // Optional:
         // draw score or game-over text onto the canvas here if you want that inside

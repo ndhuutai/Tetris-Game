@@ -84,8 +84,148 @@ export const drawTetromino = (drawingPanel, tetromino, landedGrid) => {
 /**
  * Draw a text label onto the canvas.
  */
-export const drawText = (drawingPanel, message, x, y) => {
-    drawingPanel.fillStyle = COLORS.text;
-    drawingPanel.font = '20px sans-serif';
+export const drawText = (drawingPanel, message, x, y, options = {}) => {
+    drawingPanel.fillStyle = options.color ?? COLORS.text;
+    drawingPanel.font = options.font ?? '20px sans-serif';
     drawingPanel.fillText(message, x, y);
+};
+
+/**
+ * Draw a tetromino preview from its local shape matrix at an arbitrary canvas position.
+ */
+export const drawTetrominoPreview = (drawingPanel, tetromino, startX, startY) => {
+    const previewBlockSize = 16;
+    const previewGap = 4;
+    const previewStep = previewBlockSize + previewGap;
+
+    for (let row = 0; row < tetromino.shape.length; row++) {
+        for (let column = 0; column < tetromino.shape[row].length; column++) {
+            if (!tetromino.shape[row][column]) continue;
+
+            const x = startX + column * previewStep;
+            const y = startY + row * previewStep;
+
+            drawInnerRect(drawingPanel, x + 2, y + 2, previewBlockSize - 4, previewBlockSize - 4, COLORS.block);
+            drawOuterRect(drawingPanel, x, y, previewBlockSize, previewBlockSize, COLORS.block);
+        }
+    }
+};
+
+export const drawRoundedRect = (drawingPanel, x, y, width, height, radius, fillColor, strokeColor) => {
+    drawingPanel.beginPath();
+    drawingPanel.moveTo(x + radius, y);
+    drawingPanel.lineTo(x + width - radius, y);
+    drawingPanel.quadraticCurveTo(x + width, y, x + width, y + radius);
+    drawingPanel.lineTo(x + width, y + height - radius);
+    drawingPanel.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    drawingPanel.lineTo(x + radius, y + height);
+    drawingPanel.quadraticCurveTo(x, y + height, x, y + height - radius);
+    drawingPanel.lineTo(x, y + radius);
+    drawingPanel.quadraticCurveTo(x, y, x + radius, y);
+    drawingPanel.closePath();
+
+    drawingPanel.fillStyle = fillColor;
+    drawingPanel.fill();
+    drawingPanel.strokeStyle = strokeColor;
+    drawingPanel.stroke();
+};
+
+const drawArrowGlyph = (drawingPanel, direction, centerX, centerY, size, color) => {
+    drawingPanel.beginPath();
+
+    switch (direction) {
+        case 'up':
+            drawingPanel.moveTo(centerX, centerY - size);
+            drawingPanel.lineTo(centerX + size, centerY + size);
+            drawingPanel.lineTo(centerX - size, centerY + size);
+            break;
+        case 'down':
+            drawingPanel.moveTo(centerX, centerY + size);
+            drawingPanel.lineTo(centerX + size, centerY - size);
+            drawingPanel.lineTo(centerX - size, centerY - size);
+            break;
+        case 'left':
+            drawingPanel.moveTo(centerX - size, centerY);
+            drawingPanel.lineTo(centerX + size, centerY - size);
+            drawingPanel.lineTo(centerX + size, centerY + size);
+            break;
+        case 'right':
+            drawingPanel.moveTo(centerX + size, centerY);
+            drawingPanel.lineTo(centerX - size, centerY - size);
+            drawingPanel.lineTo(centerX - size, centerY + size);
+            break;
+    }
+
+    drawingPanel.closePath();
+    drawingPanel.fillStyle = color;
+    drawingPanel.fill();
+};
+
+const drawCircleButton = (drawingPanel, centerX, centerY, radius, fillColor, strokeColor, label) => {
+    drawingPanel.beginPath();
+    drawingPanel.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    drawingPanel.closePath();
+    drawingPanel.fillStyle = fillColor;
+    drawingPanel.fill();
+    drawingPanel.strokeStyle = strokeColor;
+    drawingPanel.stroke();
+
+    drawingPanel.fillStyle = strokeColor;
+    drawingPanel.font = 'bold 14px sans-serif';
+    drawingPanel.textAlign = 'center';
+    drawingPanel.textBaseline = 'middle';
+    drawingPanel.fillText(label, centerX, centerY);
+};
+
+/**
+ * Draw a classic handheld-style control layout beneath the board.
+ */
+export const drawControlPanel = (drawingPanel, canvasWidth, canvasHeight) => {
+    const padSize = 42;
+    const padGap = 8;
+    const dPadCenterX = 126;
+    const dPadCenterY = canvasHeight - 86;
+    const dPadFill = '#c8bea6';
+    const dPadStroke = '#494536';
+    const actionFill = '#b84d3d';
+    const actionStroke = '#5b221a';
+    const actionRadius = 24;
+
+    const directionalButtons = [
+        { direction: 'up', x: dPadCenterX, y: dPadCenterY - (padSize + padGap) },
+        { direction: 'left', x: dPadCenterX - (padSize + padGap), y: dPadCenterY },
+        { direction: 'right', x: dPadCenterX + (padSize + padGap), y: dPadCenterY },
+        { direction: 'down', x: dPadCenterX, y: dPadCenterY + (padSize + padGap) },
+    ];
+
+    directionalButtons.forEach(({ direction, x, y }) => {
+        drawRoundedRect(
+            drawingPanel,
+            x - padSize / 2,
+            y - padSize / 2,
+            padSize,
+            padSize,
+            10,
+            dPadFill,
+            dPadStroke
+        );
+        drawArrowGlyph(drawingPanel, direction, x, y, 8, dPadStroke);
+    });
+
+    drawRoundedRect(
+        drawingPanel,
+        dPadCenterX - padSize / 2,
+        dPadCenterY - padSize / 2,
+        padSize,
+        padSize,
+        10,
+        dPadFill,
+        dPadStroke
+    );
+
+    drawCircleButton(drawingPanel, canvasWidth - 160, canvasHeight - 66, actionRadius, actionFill, actionStroke, 'A');
+    drawCircleButton(drawingPanel, canvasWidth - 110, canvasHeight - 106, actionRadius, actionFill, actionStroke, 'B');
+
+    drawingPanel.textAlign = 'start';
+    drawingPanel.textBaseline = 'alphabetic';
 };

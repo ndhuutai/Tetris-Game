@@ -1,4 +1,4 @@
-function GameHud({ score, isStopped, onRestart }) {
+function GameHud({ isStopped, onRestart }) {
     return (
         <header className="game-hud">
             <div className="game-copy">
@@ -10,11 +10,6 @@ function GameHud({ score, isStopped, onRestart }) {
             </div>
 
             <div className="game-meta">
-                <div className="score-card">
-                    <span className="score-label">Score</span>
-                    <strong className="score-value">{score}</strong>
-                </div>
-
                 <button
                     className="restart-button"
                     type="button"
