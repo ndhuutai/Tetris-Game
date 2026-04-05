@@ -10,5 +10,6 @@ export const createGrid = (rowCount, columnCount) => {
             newArray[row][column] = { x: 0, y: 0, isOccupied: 0 };
         }
     }
+
     return newArray;
 }
