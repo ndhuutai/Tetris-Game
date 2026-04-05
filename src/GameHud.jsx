@@ -14,7 +14,6 @@ function GameHud({ isStopped, onRestart }) {
                     className="restart-button"
                     type="button"
                     onClick={onRestart}
-                    disabled={!isStopped}
                     tabIndex={isStopped ? 0 : -1}
                 >
                     Restart

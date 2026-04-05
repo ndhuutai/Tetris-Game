@@ -68,7 +68,13 @@ function Game() {
 
     // Register global keyboard listeners once the component is mounted.
     useEffect(() => {
+        const gameKeys = new Set([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']);
+
         const onKeyDown = (event) => {
+            if (gameKeys.has(event.key)) {
+                event.preventDefault();
+            }
+
             if (event.key === ' ') {
                 if (hardDropPressedRef.current || event.repeat) {
                     return;
@@ -110,6 +116,10 @@ function Game() {
         };
 
         const onKeyUp = (event) => {
+            if (gameKeys.has(event.key)) {
+                event.preventDefault();
+            }
+
             if (event.key === ' ') {
                 hardDropPressedRef.current = false;
             }

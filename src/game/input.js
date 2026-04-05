@@ -108,7 +108,7 @@ export const handleKeyUp = (key, gameState, inputState) => {
         case INPUT_KEYS.arrowDown:
             nextInputState = {
                 ...inputState,
-                frameRate: TIMINGS.releaseDownFrameRate,
+                frameRate: TIMINGS.defaultFrameRate,
             };
             break;
     }
