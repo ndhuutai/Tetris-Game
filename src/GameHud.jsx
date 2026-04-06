@@ -1,0 +1,26 @@
+function GameHud({ isStopped, onRestart }) {
+    return (
+        <header className="game-hud">
+            <div className="game-copy">
+                <p className="eyebrow">React Rewrite</p>
+                <h1>Tetris</h1>
+                <p className="status">
+                    {isStopped ? 'Game over. Start a new run.' : 'Use arrows to move and rotate. Press space to hard drop.'}
+                </p>
+            </div>
+
+            <div className="game-meta">
+                <button
+                    className="restart-button"
+                    type="button"
+                    onClick={onRestart}
+                    tabIndex={isStopped ? 0 : -1}
+                >
+                    Restart
+                </button>
+            </div>
+        </header>
+    );
+}
+
+export default GameHud;

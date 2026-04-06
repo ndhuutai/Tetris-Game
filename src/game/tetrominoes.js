@@ -1,9 +1,9 @@
 class Tetromino {
     constructor(topLeft) {
-        if(new.target === Tetromino) {
+        if (new.target === Tetromino) {
             throw new TypeError('Cannot construct Tetromino directly. Please instantiate with one of its subclasses');
         }
-        this._potentialTopLeft = {down: {row: topLeft.row + 1, column: topLeft.column}, right: {row: topLeft.row, column: topLeft.column +1}, left:{row: topLeft.row, column: topLeft.column -1}};
+        this._potentialTopLeft = { down: { row: topLeft.row + 1, column: topLeft.column }, right: { row: topLeft.row, column: topLeft.column + 1 }, left: { row: topLeft.row, column: topLeft.column - 1 } };
         this._topLeft = topLeft;
 
         this._currentShapeIndex = 0;
@@ -75,8 +75,8 @@ class OTetromino extends Tetromino {
     constructor(topLeft) {
         super(topLeft);
         this._rotatedShape = [
-          [1,1],
-          [1,1]
+            [1, 1],
+            [1, 1]
         ];
 
         this._shape = this._rotatedShape;
@@ -108,23 +108,23 @@ class LTetromino extends Tetromino {
     constructor(topLeft) {
         super(topLeft);
         this._rotatedShape = [
-          [
-              [0,0,1],
-              [1,1,1]
-          ],
             [
-                [1,1],
-                [0,1],
-                [0,1]
+                [0, 0, 1],
+                [1, 1, 1]
             ],
             [
-                [1,1,1],
-                [1,0,0]
+                [1, 1],
+                [0, 1],
+                [0, 1]
             ],
             [
-                [1,0],
-                [1,0],
-                [1,1]
+                [1, 1, 1],
+                [1, 0, 0]
+            ],
+            [
+                [1, 0],
+                [1, 0],
+                [1, 1]
             ]
         ];
 
@@ -151,10 +151,10 @@ class LTetromino extends Tetromino {
     rotate() {
         this._currentShapeIndex++;
         this._potentialShapeIndex++;
-        if(this._currentShapeIndex === this._rotatedShape.length) {
+        if (this._currentShapeIndex === this._rotatedShape.length) {
             this._currentShapeIndex = 0;
         }
-        if(this._potentialShapeIndex === this._rotatedShape.length) {
+        if (this._potentialShapeIndex === this._rotatedShape.length) {
             this._potentialShapeIndex = 0;
         }
         this._shape = this._rotatedShape[this._currentShapeIndex];
@@ -165,69 +165,20 @@ class LTetromino extends Tetromino {
 class JTetromino extends Tetromino {
     constructor(topLeft) {
         super(topLeft);
-        this._rotatedShape = [  [   [1,0,0],
-                                    [1,1,1],
-                                ] ,
-                                [   [0,1],
-                                    [0,1],
-                                    [1,1]
-                                ] ,
-                                [   [1,1,1],
-                                    [0,0,1]
-                                ] ,
-                                [   [1,1],
-                                    [1,0],
-                                    [1,0]
-                                ] ,
-                             ];
-
-        this._shape = this._rotatedShape[this._currentShapeIndex];
-        this._potentialShape = this._rotatedShape[this._potentialShapeIndex];
-    }
-
-    get shape() {
-        return this._shape;
-    }
-
-    set shape(shape) {
-        this._shape = shape;
-    }
-
-    get potentialShape() {
-        return this._potentialShape;
-    }
-
-    set potentialShape(shape) {
-        this._potentialShape = shape;
-    }
-
-    rotate() {
-        this._currentShapeIndex++;
-        this._potentialShapeIndex++;
-        if(this._currentShapeIndex === this._rotatedShape.length) {
-            this._currentShapeIndex = 0;
-        }
-        if(this._potentialShapeIndex === this._rotatedShape.length) {
-            this._potentialShapeIndex = 0;
-        }
-        this._shape = this._rotatedShape[this._currentShapeIndex];
-        this._potentialShape = this._rotatedShape[this._potentialShapeIndex];
-    }
-}
-
-class ZTetromino extends Tetromino {
-    constructor(topLeft) {
-        super(topLeft);
-        this._rotatedShape = [
-          [
-              [1,1,0],
-              [0,1,1]
-          ],
-          [
-              [0,1],
-              [1,1],
-              [1,0]
-          ]
+        this._rotatedShape = [[[1, 0, 0],
+        [1, 1, 1],
+        ],
+        [[0, 1],
+        [0, 1],
+        [1, 1]
+        ],
+        [[1, 1, 1],
+        [0, 0, 1]
+        ],
+        [[1, 1],
+        [1, 0],
+        [1, 0]
+        ],
         ];
 
         this._shape = this._rotatedShape[this._currentShapeIndex];
@@ -253,10 +204,59 @@ class ZTetromino extends Tetromino {
     rotate() {
         this._currentShapeIndex++;
         this._potentialShapeIndex++;
-        if(this._currentShapeIndex === this._rotatedShape.length) {
+        if (this._currentShapeIndex === this._rotatedShape.length) {
             this._currentShapeIndex = 0;
         }
-        if(this._potentialShapeIndex === this._rotatedShape.length) {
+        if (this._potentialShapeIndex === this._rotatedShape.length) {
+            this._potentialShapeIndex = 0;
+        }
+        this._shape = this._rotatedShape[this._currentShapeIndex];
+        this._potentialShape = this._rotatedShape[this._potentialShapeIndex];
+    }
+}
+
+class ZTetromino extends Tetromino {
+    constructor(topLeft) {
+        super(topLeft);
+        this._rotatedShape = [
+            [
+                [1, 1, 0],
+                [0, 1, 1]
+            ],
+            [
+                [0, 1],
+                [1, 1],
+                [1, 0]
+            ]
+        ];
+
+        this._shape = this._rotatedShape[this._currentShapeIndex];
+        this._potentialShape = this._rotatedShape[this._potentialShapeIndex];
+    }
+
+    get shape() {
+        return this._shape;
+    }
+
+    set shape(shape) {
+        this._shape = shape;
+    }
+
+    get potentialShape() {
+        return this._potentialShape;
+    }
+
+    set potentialShape(shape) {
+        this._potentialShape = shape;
+    }
+
+    rotate() {
+        this._currentShapeIndex++;
+        this._potentialShapeIndex++;
+        if (this._currentShapeIndex === this._rotatedShape.length) {
+            this._currentShapeIndex = 0;
+        }
+        if (this._potentialShapeIndex === this._rotatedShape.length) {
             this._potentialShapeIndex = 0;
         }
         this._shape = this._rotatedShape[this._currentShapeIndex];
@@ -269,13 +269,13 @@ class STetromino extends Tetromino {
         super(topLeft);
         this._rotatedShape = [
             [
-                [0,1,1],
-                [1,1,0]
+                [0, 1, 1],
+                [1, 1, 0]
             ],
             [
-                [1,0],
-                [1,1],
-                [0,1]
+                [1, 0],
+                [1, 1],
+                [0, 1]
             ]
         ];
 
@@ -302,10 +302,10 @@ class STetromino extends Tetromino {
     rotate() {
         this._currentShapeIndex++;
         this._potentialShapeIndex++;
-        if(this._currentShapeIndex === this._rotatedShape.length) {
+        if (this._currentShapeIndex === this._rotatedShape.length) {
             this._currentShapeIndex = 0;
         }
-        if(this._potentialShapeIndex === this._rotatedShape.length) {
+        if (this._potentialShapeIndex === this._rotatedShape.length) {
             this._potentialShapeIndex = 0;
         }
         this._shape = this._rotatedShape[this._currentShapeIndex];
@@ -318,22 +318,22 @@ class TTetromino extends Tetromino {
         super(topLeft);
         this._rotatedShape = [
             [
-                [0,1,0],
-                [1,1,1]
+                [0, 1, 0],
+                [1, 1, 1]
             ],
             [
-                [0,1,0],
-                [1,1,0],
-                [0,1,0]
+                [0, 1, 0],
+                [1, 1, 0],
+                [0, 1, 0]
             ],
             [
-                [1,1,1],
-                [0,1,0]
+                [1, 1, 1],
+                [0, 1, 0]
             ],
             [
-                [0,1,0],
-                [0,1,1],
-                [0,1,0]
+                [0, 1, 0],
+                [0, 1, 1],
+                [0, 1, 0]
             ]
         ];
 
@@ -360,10 +360,10 @@ class TTetromino extends Tetromino {
     rotate() {
         this._currentShapeIndex++;
         this._potentialShapeIndex++;
-        if(this._currentShapeIndex === this._rotatedShape.length) {
+        if (this._currentShapeIndex === this._rotatedShape.length) {
             this._currentShapeIndex = 0;
         }
-        if(this._potentialShapeIndex === this._rotatedShape.length) {
+        if (this._potentialShapeIndex === this._rotatedShape.length) {
             this._potentialShapeIndex = 0;
         }
         this._shape = this._rotatedShape[this._currentShapeIndex];
@@ -376,7 +376,7 @@ class BarTetromino extends Tetromino {
         super(topLeft);
         this._rotatedShape = [
             [
-                [1,1,1,1]
+                [1, 1, 1, 1]
             ],
             [
                 [1],
@@ -409,10 +409,10 @@ class BarTetromino extends Tetromino {
     rotate() {
         this._currentShapeIndex++;
         this._potentialShapeIndex++;
-        if(this._currentShapeIndex === this._rotatedShape.length) {
+        if (this._currentShapeIndex === this._rotatedShape.length) {
             this._currentShapeIndex = 0;
         }
-        if(this._potentialShapeIndex === this._rotatedShape.length) {
+        if (this._potentialShapeIndex === this._rotatedShape.length) {
             this._potentialShapeIndex = 0;
         }
         this._shape = this._rotatedShape[this._currentShapeIndex];
@@ -450,4 +450,54 @@ class BlockInfo {
     set occupiedStatus(isOccupied) {
         this.isOccupied = isOccupied;
     }
+}
+
+const clonePosition = (position) => ({
+    row: position.row,
+    column: position.column,
+});
+
+const clonePotentialTopLeft = (potentialTopLeft) => ({
+    down: clonePosition(potentialTopLeft.down),
+    left: clonePosition(potentialTopLeft.left),
+    right: clonePosition(potentialTopLeft.right),
+});
+
+const registerTetrominoType = (TetrominoType) => {
+    return TetrominoType;
+};
+
+const getTetrominoType = (tetromino) => tetromino.constructor;
+
+const cloneTetromino = (tetromino) => {
+    const TetrominoType = getTetrominoType(tetromino);
+    const clonedTetromino = new TetrominoType(clonePosition(tetromino.topLeft));
+
+    clonedTetromino._potentialTopLeft = clonePotentialTopLeft(tetromino.potentialTopLeft);
+    clonedTetromino._currentShapeIndex = tetromino._currentShapeIndex;
+    clonedTetromino._potentialShapeIndex = tetromino._potentialShapeIndex;
+    clonedTetromino._shape = tetromino.shape;
+    clonedTetromino._potentialShape = tetromino.potentialShape;
+
+    return clonedTetromino;
+};
+
+registerTetrominoType(OTetromino);
+registerTetrominoType(STetromino);
+registerTetrominoType(ZTetromino);
+registerTetrominoType(TTetromino);
+registerTetrominoType(LTetromino);
+registerTetrominoType(JTetromino);
+registerTetrominoType(BarTetromino);
+
+export {
+    OTetromino,
+    STetromino,
+    ZTetromino,
+    TTetromino,
+    LTetromino,
+    JTetromino,
+    BarTetromino,
+    cloneTetromino,
+    getTetrominoType
 }

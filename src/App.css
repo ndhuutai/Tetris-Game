@@ -1,0 +1,77 @@
+.app-shell {
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.app-shell section {
+    width: min(100%, 720px);
+    display: grid;
+    gap: 24px;
+}
+
+.game-hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 24px;
+    text-align: left;
+}
+
+.game-copy {
+    display: grid;
+    gap: 8px;
+}
+
+.eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    color: var(--text);
+}
+
+.status {
+    max-width: 42ch;
+}
+
+.game-meta {
+    display: grid;
+    gap: 12px;
+    justify-items: end;
+}
+
+.restart-button {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--code-bg);
+    color: var(--text-h);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.restart-button:hover {
+    box-shadow: var(--shadow);
+}
+
+canvas {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+@media (max-width: 720px) {
+    .game-hud {
+        grid-template-columns: 1fr;
+        display: grid;
+        align-items: start;
+    }
+
+    .game-meta {
+        justify-items: start;
+    }
+}
